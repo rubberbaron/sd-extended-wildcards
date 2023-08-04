@@ -17,12 +17,13 @@ but there are many differences.
    * `__examplefile__` - a random line is chosen from "wildcard filenames" surrounded by double underscores 
       * wildcard files can contain references to wildcards, allowing recursive template expansion
       * weights can be assigned to each line, prioritizing how frequently they're chosen
+      * choices can extend across multiple lines, or be commented out
    * `{red|green|blue}` - a single text is chosen from within curly brackets with multiple options separated by the pipe character, 
-      * `{}` choices can be nested, for example `{
+      * `{}` choices can be nested, for example `{a {red|blue} ball|a {gold|silver} ring}`
       * `{}` choices can contain references to wildcard files and wildcard choices can contain `{}` choices
       * TODO: support weights in `{}` with same syntax as sd-dynamic-prompts
    * random numbers within a range can be generated
-      * `(foo:@0.8-1.0]` - choose a random real number to create a prompt like `(foo:0.87)`
+      * `(foo:@0.8-1.0)` - choose a random real number to create a prompt like `(foo:0.87)`
       * `[foo:bar:@i10-20]` - choose a random integer to create a prompt like `[foo:bar:13]`
    * multiple random number generators
       * by default, choices and random numbers are keyed to the seed for each image. this can be overridden:
@@ -30,11 +31,13 @@ but there are many differences.
          * `__@@examplefile__` completely random, regardless of seed
          * `__@@@examplefile__` consistent within a single batch
          * `__@@@@examplefile__` consistent within a single batch but independent of seed
+      * you can also use global settings to force fully-random or always-the-same generators
    * test and set flags
       * `<setflag:foo>` - set a flag which can be tested later in the prompt
       * `<hasflag:foo:some example text>` - test if a flag was set earlier in the prompt
    * set and retrieve text from variables
       * `<setvar:foo:this is some text>` - store a string in a variable for later use
       * `<getvar:foo>` - retrieve the string from the variable and add to the prompt
+      * these can be nested with flags, for example `<hasflag:cringe:<getvar:cringedata>>`
 
 ## Detailed description
