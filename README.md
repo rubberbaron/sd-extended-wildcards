@@ -14,7 +14,7 @@ but there are many differences.
 
 ## Features
 
-   * `\_\_examplefile\_\_` - a random line is chosen from "wildcard filenames" surrounded by double underscores 
+   * `__examplefile__` - a random line is chosen from "wildcard filenames" surrounded by double underscores 
       * wildcard files can contain references to wildcards, allowing recursive template expansion
       * weights can be assigned to each line, prioritizing how frequently they're chosen
    * `{red|green|blue}` - a single text is chosen from within curly brackets with multiple options separated by the pipe character, 
@@ -26,10 +26,10 @@ but there are many differences.
       * `[foo:bar:@i10-20]` - choose a random integer to create a prompt like `[foo:bar:13]`
    * multiple random number generators
       * by default, choices and random numbers are keyed to the seed for each image. this can be overridden:
-         * `\_\_@examplefile\_\_` choices depend on the seed
-         * `\_\_@@examplefile\_\_` completely random, regardless of seed
-         * `\_\_@@@examplefile\_\_` consistent within a single batch
-         * `\_\_@@@@examplefile\_\_` consistent within a single batch but independent of seed
+         * `__@examplefile__` choices depend on the seed
+         * `__@@examplefile__` completely random, regardless of seed
+         * `__@@@examplefile__` consistent within a single batch
+         * `__@@@@examplefile__` consistent within a single batch but independent of seed
    * test and set flags
       * `<setflag:foo>` - set a flag which can be tested later in the prompt
       * `<hasflag:foo:some example text>` - test if a flag was set earlier in the prompt
