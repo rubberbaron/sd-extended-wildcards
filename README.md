@@ -1,6 +1,40 @@
-# Extended Wildcards
-Extended version of stable-diffusion-webui-wildcards with many new features
+# Stable Diffusion Extended Wildcards extension
 
-Allows you to use `__name__` syntax in your prompt to get a random line from a file named `name.txt` in the wildcards directory.
+## Status
 
-Documentation on new features to come.
+Although this has been posted, it is in early access. THere's no documentation and some things may change. Use at your own risk.
+
+## Introduction
+
+A custom extension for
+[AUTOMATIC1111/stable-diffusion-webui](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
+that expands on the stable-diffusion-webui-wildcards with many new features. Some of these are similar to
+[sd-dynamic-prompts](https://github.com/adieyal/sd-dynamic-prompts)
+but there are many differences.
+
+## Features
+
+   * `\_\_examplefile\_\_` - a random line is chosen from "wildcard filenames" surrounded by double underscores 
+      * wildcard files can contain references to wildcards, allowing recursive template expansion
+      * weights can be assigned to each line, prioritizing how frequently they're chosen
+   * `{red|green|blue}` - a single text is chosen from within curly brackets with multiple options separated by the pipe character, 
+      * `{}` choices can be nested, for example `{
+      * `{}` choices can contain references to wildcard files and wildcard choices can contain `{}` choices
+      * TODO: support weights in `{}` with same syntax as sd-dynamic-prompts
+   * random numbers within a range can be generated
+      * `(foo:@0.8-1.0]` - choose a random real number to create a prompt like `(foo:0.87)`
+      * `[foo:bar:@i10-20]` - choose a random integer to create a prompt like `[foo:bar:13]`
+   * multiple random number generators
+      * by default, choices and random numbers are keyed to the seed for each image. this can be overridden:
+         * `\_\_@examplefile\_\_` choices depend on the seed
+         * `\_\_@@examplefile\_\_` completely random, regardless of seed
+         * `\_\_@@@examplefile\_\_` consistent within a single batch
+         * `\_\_@@@@examplefile\_\_` consistent within a single batch but independent of seed
+   * test and set flags
+      * `<setflag:foo>` - set a flag which can be tested later in the prompt
+      * `<hasflag:foo:some example text>` - test if a flag was set earlier in the prompt
+   * set and retrieve text from variables
+      * `<setvar:foo:this is some text>` - store a string in a variable for later use
+      * `<getvar:foo>` - retrieve the string from the variable and add to the prompt
+
+## Detailed description
