@@ -89,28 +89,32 @@ class ExtendedWildcardsScript(scripts.Script):
                         self.flags.pop(value, None)
                         return ("",neg)
                     if token == "getvar" and len(t)==5:
+                        #print(f"get variable {value}")
                         if value in self.variables:
                             return treeprocess(self.variables[value], neg, rgen, generators)
-                        else
+                        else:
                             return ("",neg)
                     if token == "setvar" and len(t)==7:
+                        #print(f"set variable {value} to {t[5]}")
                         self.variables[value] = t[5]
                         return ("",neg)
                 for i in range(1,len(t),2):
                    t[i],neg = treeprocess(t[i], neg, rgen, generators)
             elif firstchar == '{':
+                if type(t[1]) == str:
+                    print(f"Whoops, bad tree: {t}")
                 t[1][0],localgen = self.process_prefix(t[1][0], rgen, generators)
                 n = len(t) // 2    # number of choices
                 choice = localgen.randrange(n)
                 t,neg = treeprocess(t[1+2*choice], neg, localgen, generators) # @TODO: can just return this directly
                 t = [t]
             else:
-                # even entries are plain text
-                for i in range(0,len(t),2):
-                   t[i],neg = self.leaf_process(t[i], neg, rgen, generators)
-                # odd entries are tree nodes
-                for i in range(1,len(t),2):
-                   t[i],neg = treeprocess(t[i], neg, rgen, generators)
+                # need to process all nodes in order so flags/vars are evaluated in correct order
+                for i in range(0,len(t)):
+                    if i % 2 == 0:
+                        t[i],neg = self.leaf_process(t[i], neg, rgen, generators)
+                    else:
+                        t[i],neg = treeprocess(t[i], neg, rgen, generators)
             return ("".join(t),neg)
 
         tree = miniparser_parse(wildcard_parser,s)
@@ -182,7 +186,7 @@ class ExtendedWildcardsScript(scripts.Script):
                 arr[i+2] = ""
             s = "".join(arr)
 
-        return (s,neg)
+        return self.process_string(s, neg, gen, generators)
 
     def replace_wildcard(self, text, neg, gen, generators):
         if " " in text or len(text) == 0:
@@ -199,7 +203,6 @@ class ExtendedWildcardsScript(scripts.Script):
         text,this_gen = self.process_prefix(text, gen, generators)
         if text is None:
             return ("","")
-
               
         replacement_file = os.path.join(ewildcard_dir, "wildcards", f"{text}.txt")
         if os.path.exists(replacement_file):
@@ -327,9 +330,9 @@ class ExtendedWildcardsScript(scripts.Script):
                     x = choices[n]
                     # process anything that doesn't require recursion
                     refined = self.nonrecursive_process(x[0], neg, this_gen, generators)
-                    refined = self.alternation_process(refined[0], refined[1], this_gen, generators)
                     # process anything that requires recursion
-                    return self.process_string(refined[0],refined[1], this_gen, generators) # recurse looking for more __
+                    refined = self.alternation_process(refined[0], refined[1], this_gen, generators)
+                    return refined # self.process_string(refined[0],refined[1], this_gen, generators) # recurse looking for more __
 
                 # not reached
                 return (text,neg);
@@ -392,8 +395,8 @@ class ExtendedWildcardsScript(scripts.Script):
             self.variables = { }
             prompt = (p.all_prompts[i], "")
             prompt = self.nonrecursive_process(prompt[0], prompt[1], generators.normal, generators)
-            prompt = self.alternation_process(prompt[0], prompt[1], generators.normal, generators)
-            both = self.process_string(prompt[0], prompt[1], generators.normal, generators)
+            both = self.alternation_process(prompt[0], prompt[1], generators.normal, generators)
+            #both = self.process_string(both[0], both[1], generators.normal, generators)
             both = (" ".join(both[0].split()), " ".join(both[1].split()))
             p.all_prompts[i] = both[0]
             # this is causing crashes

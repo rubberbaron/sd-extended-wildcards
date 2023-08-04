@@ -41,3 +41,36 @@ but there are many differences.
       * these can be nested with flags, for example `<hasflag:cringe:<getvar:cringedata>>`
 
 ## Detailed description
+
+
+## Example
+
+```
+color photograph, sci-fi, {||<setflag:male>}
+  <hasntflag:male: {beautiful|pretty|perfect|}>
+  [{[human|alien|human]|[alien|human|human]|[human|human|alien]|[human|alien-skinned]|||}:@0.1-0.25]
+  <hasntflag:male: {__sf_woman__ ,|woman}>
+  <hasflag:male:$@ix18-45yo male>
+  {exotic|high fashion|fashionable|unfashionable|fancy|wild|unique|elaborate|||}
+  <hasntflag:male:{revealing|skimpy|sexy||||||} {gown|dress|bodysuit|outfit|clothing|costume|cosplay}>
+  <hasflag:male:{clothing|costume|outfit|skimpy clothing|skimpy outfit|sexy costume|cosplay|clothing}>,
+  {transparent {chest|arms|neck|thighs|arms}||{shiny|metallic|glossy|glowing|neon|}|__gp3s/sf_wearing_details__||},
+  <getvar:performance>
+  __sf_performer_location__  {|||__gpt3/sf_place_details__}
+```
+
+`sf_woman.txt` contains:
+```
+{||__sf_multicolored_hair__} :@ix21-27yo __sf_ethnicity__ woman with __sfhair__ __breasts2__ !!75%
+{||__sf_multicolored_hair__} :@ix28-36yo __sf_ethnicity__ woman with __sfhair__ __breasts2__ !!25%
+```
+
+`breasts2.txt` contains
+```
+!!1
+!huge breasts, large breasts!                 # put huge/large in negative, so as to tend towards smaller breasts
+with medium breasts !huge breasts!
+with large breasts                 !!0.35 
+with huge breasts                  !!0.15
+```
+etc.
