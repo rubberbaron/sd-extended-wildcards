@@ -89,7 +89,10 @@ class ExtendedWildcardsScript(scripts.Script):
                         self.flags.pop(value, None)
                         return ("",neg)
                     if token == "getvar" and len(t)==5:
-                        return treeprocess(self.variables[value], neg, rgen, generators)
+                        if value in self.variables:
+                            return treeprocess(self.variables[value], neg, rgen, generators)
+                        else
+                            return ("",neg)
                     if token == "setvar" and len(t)==7:
                         self.variables[value] = t[5]
                         return ("",neg)
